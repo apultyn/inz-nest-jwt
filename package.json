@@ -6,6 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "prisma:dev:deploy": "prisma migrate deploy",
+    "db:dev:rm": "docker compose -f ../nest-jwt.yml rm nest-jwt-database -s -f -v",
+    "db:dev:up": "docker compose -f ../nest-jwt.yml up -d",
+    "db:dev:restart": "npm run db:dev:rm && npm run db:dev:up && sleep 1 && npm run prisma:dev:deploy",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -25,6 +29,9 @@
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/adapter-mariadb": "^6.11.1",
     "@prisma/client": "^6.11.1",
+    "argon2": "^0.43.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
     "prisma": "^6.11.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"

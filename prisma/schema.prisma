@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -17,13 +16,36 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
 
-  email String
-  hash String
+  email    String   @unique
+  password String
+  reviews  Review[]
+
+  @@map("users")
 }
 
 model Book {
   id Int @id @default(autoincrement())
 
-  title String
+  title  String
   author String
+
+  reviews Review[]
+
+  @@unique([title, author], name: "uniqueBookTitleAuthor")
+  @@map("books")
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+
+  stars   Int
+  comment String
+
+  userId Int
+  user   User  @relation(fields: [userId], references: [id])
+  Book   Book? @relation(fields: [bookId], references: [id])
+  bookId Int?
+
+  @@unique([userId, bookId], name: "uniqueReviewBookUser")
+  @@map("reviews")
 }
