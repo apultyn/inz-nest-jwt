@@ -1,19 +1,28 @@
 import {
+    BadRequestException,
     ForbiddenException,
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import * as argon from 'argon2';
+
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LoginDto, RegisterDto } from './dto';
-import * as argon from 'argon2';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { Role } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable({})
 export class AuthService {
-    constructor(private prisma: PrismaService) {}
+    constructor(
+        private prisma: PrismaService,
+        private jwt: JwtService,
+        private config: ConfigService,
+    ) {}
     async register(dto: RegisterDto) {
         if (dto.password !== dto.confirmPassword) {
-            return 'Passwd missmatch';
+            throw new BadRequestException('Password missmatch');
         }
 
         try {
@@ -27,10 +36,11 @@ export class AuthService {
                 select: {
                     id: true,
                     email: true,
+                    role: true,
                 },
             });
 
-            return user;
+            return this.singToken(user.id, user.email, user.role);
         } catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
@@ -43,7 +53,7 @@ export class AuthService {
     async login(dto: LoginDto) {
         const user = await this.prisma.user.findUnique({
             where: {
-            email: dto.email,
+                email: dto.email,
             },
         });
 
@@ -57,7 +67,27 @@ export class AuthService {
             throw new UnauthorizedException('Password incorrect');
         }
 
-        const { password, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+        return this.singToken(user.id, user.email, user.role);
+    }
+
+    async singToken(
+        userId: number,
+        email: string,
+        role: Role,
+    ): Promise<{ access_token: string }> {
+        const payload = {
+            sub: userId,
+            email: email,
+            role: role,
+        };
+
+        const token = await this.jwt.signAsync(payload, {
+            expiresIn: '15m',
+            secret: this.config.get('JWT_SECRET'),
+        });
+
+        return {
+            access_token: token,
+        };
     }
 }
