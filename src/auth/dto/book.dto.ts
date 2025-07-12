@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class BookCreateReq {
     @IsNotEmpty()
@@ -7,5 +7,15 @@ export class BookCreateReq {
 
     @IsNotEmpty()
     @IsString()
+    author: string;
+}
+
+export class BookUpdateReq {
+    @IsString()
+    @IsOptional()
+    title: string;
+
+    @IsString()
+    @IsOptional()
     author: string;
 }
