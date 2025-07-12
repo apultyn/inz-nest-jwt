@@ -24,8 +24,8 @@ export class BookController {
     }
 
     @Get(':id')
-    getById(@Param() id: number) {
-        return this.bookService.getById(id);
+    getById(@Param('id') id: string) {
+        return this.bookService.getById(Number(id));
     }
 
     @Roles(Role.ADMIN)

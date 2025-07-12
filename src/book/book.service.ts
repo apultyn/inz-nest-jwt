@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { BookCreateReq, BookUpdateReq } from 'src/auth/dto/book.dto';
+import { bookInclude } from 'src/constants/book.include';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -12,7 +13,9 @@ export class BookService {
     constructor(private prismaService: PrismaService) {}
 
     async getAll() {
-        return await this.prismaService.book.findMany();
+        return await this.prismaService.book.findMany({
+            include: bookInclude,
+        });
     }
 
     async getById(id: number) {
@@ -20,6 +23,7 @@ export class BookService {
             where: {
                 id: id,
             },
+            include: bookInclude,
         });
 
         if (!book) {
