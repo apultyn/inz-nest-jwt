@@ -48,8 +48,8 @@ model Review {
   comment String
 
   userId Int
-  user   User  @relation(fields: [userId], references: [id])
-  Book   Book? @relation(fields: [bookId], references: [id])
+  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Book   Book? @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId Int?
 
   @@unique([userId, bookId], name: "uniqueReviewBookUser")
