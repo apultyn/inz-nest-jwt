@@ -1,11 +1,15 @@
 import { Test } from '@nestjs/testing';
-import { AppModule } from '../src/app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import * as pactum from 'pactum';
-import * as argon from 'argon2';
-import { LoginDto, RegisterDto } from 'src/dto';
 import { Role } from '@prisma/client';
+import * as argon from 'argon2';
+import * as pactum from 'pactum';
+
+import { AppModule } from '../src/app.module';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { LoginDto, RegisterDto } from 'src/dto';
+
+let userToken = '';
+let adminToken = '';
 
 describe('App e2e', () => {
     let app: INestApplication;
@@ -91,7 +95,7 @@ describe('App e2e', () => {
             });
         });
         describe('Login', () => {
-            it('Login successfull', () => {
+            it('Login user successfull', () => {
                 const req: LoginDto = {
                     email: 'user@example.com',
                     password: 'passwd',
@@ -101,12 +105,60 @@ describe('App e2e', () => {
                     .post('/api/auth/login')
                     .withBody(req)
                     .expectStatus(200)
-                    .expectBodyContains('access_token');
+                    .expectBodyContains('access_token')
+                    .then(
+                        (res) => {
+                            userToken = res.body.access_token;
+                        },
+                        () => {},
+                    );
+            });
+            it('Login admin successfull', () => {
+                const req: LoginDto = {
+                    email: 'admin@example.com',
+                    password: 'passwd',
+                };
+                return pactum
+                    .spec()
+                    .post('/api/auth/login')
+                    .withBody(req)
+                    .expectStatus(200)
+                    .expectBodyContains('access_token')
+                    .then(
+                        (res) => {
+                            adminToken = res.body.access_token;
+                        },
+                        () => {},
+                    );
             });
         });
     });
     describe('Book', () => {
-        describe('Create', () => {});
+        describe('Create', () => {
+            it('Create unauthorized', () => {
+                return pactum
+                    .spec()
+                    .post('/api/books')
+                    .withBody({ title: 'Dune 2', author: 'Frank Herbert' })
+                    .expectStatus(401);
+            });
+            it('Create as user', async () => {
+                return pactum
+                    .spec()
+                    .post('/api/books')
+                    .withBearerToken(userToken)
+                    .withBody({ title: 'Dune 2', author: 'Frank Herbert' })
+                    .expectStatus(403);
+            });
+            it('Create as admin', () => {
+                return pactum
+                    .spec()
+                    .post('/api/books')
+                    .withBearerToken(adminToken)
+                    .withBody({ title: 'Dune 2', author: 'Frank Herbert' })
+                    .expectStatus(201);
+            });
+        });
         describe('Read', () => {
             it('Get list', () => {
                 return pactum
@@ -151,7 +203,36 @@ describe('App e2e', () => {
                     });
             });
         });
-        describe('Update', () => {});
+        describe('Update', () => {
+            it('Update unauthorized', () => {
+                return pactum
+                    .spec()
+                    .patch('/api/books/1')
+                    .withBody({ title: 'Dune 2' })
+                    .expectStatus(401);
+            });
+            it('Update as user', async () => {
+                return pactum
+                    .spec()
+                    .patch('/api/books/1')
+                    .withBody({ title: 'Dune 2' })
+                    .withBearerToken(userToken)
+                    .expectStatus(403);
+            });
+            it('Update as admin', () => {
+                return pactum
+                    .spec()
+                    .patch('/api/books/1')
+                    .withBody({ title: 'Dune 2' })
+                    .withBearerToken(adminToken)
+                    .expectStatus(200)
+                    .expectBody({
+                        id: 1,
+                        title: 'Dune 2',
+                        author: 'Frank Herbert',
+                    });
+            });
+        });
         describe('Delete', () => {});
     });
     describe('Review', () => {
