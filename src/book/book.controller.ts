@@ -6,6 +6,7 @@ import {
     Param,
     Patch,
     Post,
+    Query,
     UseGuards,
 } from '@nestjs/common';
 import { BookService } from './book.service';
@@ -18,9 +19,9 @@ import { JwtGuard } from 'src/auth/guard/jwt.guard';
 @Controller('api/books')
 export class BookController {
     constructor(private bookService: BookService) {}
-    @Get('')
-    getAll() {
-        return this.bookService.getAll();
+    @Get()
+    getList(@Query('searchString') searchString: string = '') {
+        return this.bookService.getList(searchString);
     }
 
     @Get(':id')

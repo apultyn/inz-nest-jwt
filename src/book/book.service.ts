@@ -12,9 +12,23 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class BookService {
     constructor(private prismaService: PrismaService) {}
 
-    async getAll() {
+    async getList(searchString: string) {
         return await this.prismaService.book.findMany({
             include: bookInclude,
+            where: {
+                OR: [
+                    {
+                        title: {
+                            contains: searchString,
+                        },
+                    },
+                    {
+                        author: {
+                            contains: searchString,
+                        },
+                    },
+                ],
+            },
         });
     }
 
