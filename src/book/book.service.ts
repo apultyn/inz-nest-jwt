@@ -4,7 +4,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { BookCreateReq, BookUpdateReq } from 'src/auth/dto/book.dto';
+import { BookCreateReq, BookUpdateReq } from 'src/dto/book.dto';
 import { bookInclude } from 'src/constants/book.include';
 import { PrismaService } from 'src/prisma/prisma.service';
 

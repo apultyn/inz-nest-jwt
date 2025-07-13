@@ -4,7 +4,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { ReviewCreateReq } from 'src/auth/dto/review.dto';
+import { ReviewCreateReq, ReviewUpdateReq } from 'src/dto/review.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { reviewSelect } from '../constants';
 
@@ -53,6 +53,39 @@ export class ReviewService {
                 }
                 if (error.code === 'P2003') {
                     throw new BadRequestException('Book does not exist');
+                }
+            }
+            throw error;
+        }
+    }
+
+    async update(dto: ReviewUpdateReq, id: number) {
+        const review = this.getById(id);
+
+        try {
+            const updatedReview = await this.prismaService.review.update({
+                where: {
+                    id: id,
+                },
+                data: { ...review, ...dto },
+            });
+            return updatedReview;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async delete(id: number) {
+        try {
+            return await this.prismaService.review.delete({
+                where: {
+                    id: id,
+                },
+            });
+        } catch (error) {
+            if (error instanceof PrismaClientKnownRequestError) {
+                if (error.code === 'P2025') {
+                    throw new NotFoundException('Review not found');
                 }
             }
             throw error;

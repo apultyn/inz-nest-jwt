@@ -9,7 +9,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as argon from 'argon2';
 
 import { PrismaService } from 'src/prisma/prisma.service';
-import { LoginDto, RegisterDto } from './dto';
+import { LoginDto, RegisterDto } from '../dto';
 import { Role } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 

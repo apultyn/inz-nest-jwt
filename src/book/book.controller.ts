@@ -10,7 +10,7 @@ import {
     UseGuards,
 } from '@nestjs/common';
 import { BookService } from './book.service';
-import { BookCreateReq, BookUpdateReq } from 'src/auth/dto/book.dto';
+import { BookCreateReq, BookUpdateReq } from 'src/dto/book.dto';
 import { Roles } from 'src/auth/decorator';
 import { Role } from '@prisma/client';
 import { RolesGuard } from 'src/auth/guard';

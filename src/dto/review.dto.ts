@@ -1,6 +1,7 @@
 import {
     IsNotEmpty,
     IsNumber,
+    IsOptional,
     IsString,
     Length,
     Max,
@@ -23,4 +24,17 @@ export class ReviewCreateReq {
     @IsNotEmpty()
     @IsNumber()
     bookId: number;
+}
+
+export class ReviewUpdateReq {
+    @IsNumber()
+    @IsOptional()
+    @Min(1)
+    @Max(5)
+    stars: number;
+
+    @IsString()
+    @IsOptional()
+    @MaxLength(2000)
+    comment: string;
 }
