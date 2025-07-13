@@ -233,7 +233,25 @@ describe('App e2e', () => {
                     });
             });
         });
-        describe('Delete', () => {});
+        describe('Delete', () => {
+            it('Delete unauthorized', () => {
+                return pactum.spec().delete('/api/books/1').expectStatus(401);
+            });
+            it('Delete as user', async () => {
+                return pactum
+                    .spec()
+                    .delete('/api/books/1')
+                    .withBearerToken(userToken)
+                    .expectStatus(403);
+            });
+            it('Delete as admin', () => {
+                return pactum
+                    .spec()
+                    .delete('/api/books/1')
+                    .withBearerToken(adminToken)
+                    .expectStatus(200);
+            });
+        });
     });
     describe('Review', () => {
         describe('Create', () => {});
