@@ -68,11 +68,19 @@ describe('App e2e', () => {
             comment: 'Awesome',
         };
 
+        const review2 = {
+            id: 2,
+            bookId: 2,
+            userId: 1,
+            stars: 2,
+            comment: 'Awfully boring',
+        };
+
         await prisma.user.createMany({
             data: [admin, user],
         });
         await prisma.book.createMany({ data: [book1, book2] });
-        await prisma.review.create({ data: review1 });
+        await prisma.review.createMany({ data: [review1, review2] });
     });
 
     afterAll(() => {
@@ -254,9 +262,115 @@ describe('App e2e', () => {
         });
     });
     describe('Review', () => {
-        describe('Create', () => {});
-        describe('Read', () => {});
-        describe('Update', () => {});
-        describe('Delete', () => {});
+        describe('Create', () => {
+            const req = {
+                bookId: 2,
+                stars: 4,
+                comment: 'Fine',
+            };
+            it('Create unauthorized', () => {
+                return pactum
+                    .spec()
+                    .post('/api/reviews')
+                    .withBody(req)
+                    .expectStatus(401);
+            });
+            it('Create as user', async () => {
+                return pactum
+                    .spec()
+                    .post('/api/reviews')
+                    .withBearerToken(userToken)
+                    .withBody(req)
+                    .expectStatus(201);
+            });
+            it('Create as admin', () => {
+                return pactum
+                    .spec()
+                    .post('/api/reviews')
+                    .withBearerToken(adminToken)
+                    .withBody({ ...req, bookId: 1 })
+                    .expectStatus(201);
+            });
+        });
+        describe('Read', () => {
+            it('Get list', () => {
+                return pactum
+                    .spec()
+                    .get('/api/reviews')
+                    .expectStatus(200)
+                    .expectJsonLength(2);
+            });
+            it('Get single', () => {
+                return pactum
+                    .spec()
+                    .get('/api/reviews/1')
+                    .expectStatus(200)
+                    .expectBody({
+                        id: 1,
+                        stars: 5,
+                        comment: 'Awesome',
+                        user: {
+                            email: 'user@example.com',
+                        },
+                    });
+            });
+        });
+        describe('Update', () => {
+            it('Update unauthorized', () => {
+                return pactum
+                    .spec()
+                    .patch('/api/reviews/1')
+                    .withBody({ stars: 3 })
+                    .expectStatus(401);
+            });
+            it('Update as user', async () => {
+                return pactum
+                    .spec()
+                    .patch('/api/reviews/1')
+                    .withBody({ stars: 3 })
+                    .withBearerToken(userToken)
+                    .expectStatus(403);
+            });
+            it('Update as admin', () => {
+                return pactum
+                    .spec()
+                    .patch('/api/reviews/1')
+                    .withBody({ stars: 3 })
+                    .withBearerToken(adminToken)
+                    .expectStatus(200)
+                    .expectBody({
+                        id: 1,
+                        stars: 3,
+                        comment: 'Awesome',
+                        user: {
+                            email: 'user@example.com',
+                        },
+                    });
+            });
+        });
+        describe('Delete', () => {
+            describe('Delete', () => {
+                it('Delete unauthorized', () => {
+                    return pactum
+                        .spec()
+                        .delete('/api/reviews/1')
+                        .expectStatus(401);
+                });
+                it('Delete as user', async () => {
+                    return pactum
+                        .spec()
+                        .delete('/api/reviews/1')
+                        .withBearerToken(userToken)
+                        .expectStatus(403);
+                });
+                it('Delete as admin', () => {
+                    return pactum
+                        .spec()
+                        .delete('/api/reviews/1')
+                        .withBearerToken(adminToken)
+                        .expectStatus(200);
+                });
+            });
+        });
     });
 });

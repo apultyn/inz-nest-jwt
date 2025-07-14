@@ -68,6 +68,7 @@ export class ReviewService {
                     id: id,
                 },
                 data: { ...review, ...dto },
+                select: reviewSelect,
             });
             return updatedReview;
         } catch (error) {
@@ -81,6 +82,7 @@ export class ReviewService {
                 where: {
                     id: id,
                 },
+                select: reviewSelect,
             });
         } catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
