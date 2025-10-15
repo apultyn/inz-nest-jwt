@@ -75,14 +75,22 @@ export class AuthService {
         email: string,
         role: Role,
     ): Promise<{ access_token: string }> {
+        const iat = Math.floor(Date.now() / 1000);
+        const expires_in_seconds = +this.config.get('JWT_EXPIRE');
+        const exp = iat + expires_in_seconds;
+
         const payload = {
-            sub: userId,
             email: email,
+            sub: userId,
+            iat: iat,
+            exp: exp,
             role: role,
         };
 
+        const expires_in = +this.config.get('JWT_EXPIRE');
+        console.log(expires_in);
+
         const token = await this.jwt.signAsync(payload, {
-            expiresIn: '15m',
             secret: this.config.get('JWT_SECRET'),
         });
 
