@@ -257,7 +257,7 @@ describe('App e2e', () => {
                     .spec()
                     .delete('/api/books/1')
                     .withBearerToken(adminToken)
-                    .expectStatus(200);
+                    .expectStatus(204);
             });
         });
     });
@@ -368,7 +368,7 @@ describe('App e2e', () => {
                         .spec()
                         .delete('/api/reviews/1')
                         .withBearerToken(adminToken)
-                        .expectStatus(200);
+                        .expectStatus(204);
                 });
             });
         });

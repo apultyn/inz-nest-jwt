@@ -8,6 +8,7 @@ import {
     Post,
     Query,
     UseGuards,
+    HttpCode,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { BookCreateReq, BookUpdateReq } from 'src/dto/book.dto';
@@ -49,6 +50,7 @@ export class BookController {
     @UseGuards(RolesGuard)
     @UseGuards(JwtGuard)
     @Delete(':id')
+    @HttpCode(204)
     delete(@Param('id') id: string) {
         return this.bookService.delete(Number(id));
     }

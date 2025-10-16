@@ -7,6 +7,7 @@ import {
     Patch,
     Post,
     UseGuards,
+    HttpCode,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { Roles } from 'src/auth/decorator';
@@ -49,6 +50,7 @@ export class ReviewController {
     @UseGuards(RolesGuard)
     @UseGuards(JwtGuard)
     @Delete(':id')
+    @HttpCode(204)
     delete(@Param('id') id: string) {
         return this.reviewService.delete(Number(id));
     }
