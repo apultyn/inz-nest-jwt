@@ -203,6 +203,7 @@ describe('App e2e', () => {
                                 id: 1,
                                 stars: 5,
                                 comment: 'Awesome',
+                                bookId: 1,
                                 user: {
                                     email: 'user@example.com',
                                 },
@@ -309,6 +310,7 @@ describe('App e2e', () => {
                         id: 1,
                         stars: 5,
                         comment: 'Awesome',
+                        bookId: 1,
                         user: {
                             email: 'user@example.com',
                         },
@@ -342,6 +344,7 @@ describe('App e2e', () => {
                         id: 1,
                         stars: 3,
                         comment: 'Awesome',
+                        bookId: 1,
                         user: {
                             email: 'user@example.com',
                         },

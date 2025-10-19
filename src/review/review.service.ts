@@ -48,7 +48,7 @@ export class ReviewService {
             if (error instanceof PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
                     throw new BadRequestException(
-                        'Only one review per user per book',
+                        'You can write only one review per book',
                     );
                 }
                 if (error.code === 'P2003') {

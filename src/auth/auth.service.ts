@@ -40,11 +40,14 @@ export class AuthService {
                 },
             });
 
-            return this.singToken(user.id, user.email, user.role);
+            return {
+                message: 'Registered successfully',
+                user,
+            };
         } catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
-                    throw new ForbiddenException('Email taken');
+                    throw new BadRequestException('Email taken');
                 }
             }
             throw error;
@@ -74,7 +77,7 @@ export class AuthService {
         userId: number,
         email: string,
         role: Role,
-    ): Promise<{ access_token: string }> {
+    ): Promise<{ access_token: string; expires_in: number }> {
         const iat = Math.floor(Date.now() / 1000);
         const expires_in_seconds = +this.config.get('JWT_EXPIRE');
         const exp = iat + expires_in_seconds;
@@ -95,6 +98,7 @@ export class AuthService {
 
         return {
             access_token: token,
+            expires_in,
         };
     }
 }

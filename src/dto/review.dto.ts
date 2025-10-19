@@ -6,6 +6,7 @@ import {
     Max,
     MaxLength,
     Min,
+    MinLength,
 } from 'class-validator';
 
 export class ReviewCreateReq {
@@ -27,13 +28,14 @@ export class ReviewCreateReq {
 
 export class ReviewUpdateReq {
     @IsNumber()
-    @IsOptional()
+    @IsNotEmpty()
     @Min(1)
     @Max(5)
     stars: number;
 
     @IsString()
     @IsOptional()
+    @MinLength(1, { message: 'comment must not be empty' })
     @MaxLength(2000)
     comment: string;
 }

@@ -1,7 +1,8 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmailConf } from './util';
 
 export class RegisterDto {
-    @IsEmail()
+    @IsEmail({}, IsEmailConf)
     @IsNotEmpty()
     email: string;
 
@@ -15,7 +16,7 @@ export class RegisterDto {
 }
 
 export class LoginDto {
-    @IsEmail()
+    @IsEmail({}, IsEmailConf)
     @IsNotEmpty()
     email: string;
 

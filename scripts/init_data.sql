@@ -38,25 +38,21 @@ VALUES
     ('Miguel de Cervantes', 'Don Quixote');
 
 INSERT INTO
-    users (
-        email,
-        password,
-        role
-    )
+    users (email, password, role)
 VALUES
     (
         'apultyn@example.com',
-        'pbkdf2_sha256$1000000$Kf7ZxRtVdVcOhBMwXcNWG2$2ULZetIhYzBlcO4kDHXpm2j8aq7X4xHwLvXp0fNzl1w=',
+        '$argon2id$v=19$m=65536,t=3,p=4$Z7SxehmAvO8Vwewvn/0TCA$MDxYmO80md0XmjDA0n6XlFB+145JrT9g7s9DvXimPGA',
         'ADMIN'
     ),
     (
         'mpultyn@example.com',
-        'pbkdf2_sha256$1000000$Kf7ZxRtVdVcOhBMwXcNWG2$2ULZetIhYzBlcO4kDHXpm2j8aq7X4xHwLvXp0fNzl1w=',
+        '$argon2id$v=19$m=65536,t=3,p=4$Z7SxehmAvO8Vwewvn/0TCA$MDxYmO80md0XmjDA0n6XlFB+145JrT9g7s9DvXimPGA',
         'USER'
     ),
     (
         'bpultyn@example.com',
-        'pbkdf2_sha256$1000000$Kf7ZxRtVdVcOhBMwXcNWG2$2ULZetIhYzBlcO4kDHXpm2j8aq7X4xHwLvXp0fNzl1w=',
+        '$argon2id$v=19$m=65536,t=3,p=4$Z7SxehmAvO8Vwewvn/0TCA$MDxYmO80md0XmjDA0n6XlFB+145JrT9g7s9DvXimPGA',
         'USER'
     );
 
