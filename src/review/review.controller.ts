@@ -31,24 +31,21 @@ export class ReviewController {
     }
 
     @Roles(Role.USER, Role.ADMIN)
-    @UseGuards(RolesGuard)
-    @UseGuards(JwtGuard)
+    @UseGuards(JwtGuard, RolesGuard)
     @Post('')
     create(@Body() dto: ReviewCreateReq, @GetUserId('id') userId: number) {
         return this.reviewService.create(dto, userId);
     }
 
     @Roles(Role.ADMIN)
-    @UseGuards(RolesGuard)
-    @UseGuards(JwtGuard)
+    @UseGuards(JwtGuard, RolesGuard)
     @Patch(':id')
     update(@Body() dto: ReviewUpdateReq, @Param('id') id: string) {
         return this.reviewService.update(dto, Number(id));
     }
 
     @Roles(Role.ADMIN)
-    @UseGuards(RolesGuard)
-    @UseGuards(JwtGuard)
+    @UseGuards(JwtGuard, RolesGuard)
     @Delete(':id')
     @HttpCode(204)
     delete(@Param('id') id: string) {
