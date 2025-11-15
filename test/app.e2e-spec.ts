@@ -10,12 +10,14 @@ import { LoginDto, RegisterDto } from 'src/dto';
 
 let userToken = '';
 let adminToken = '';
+let passwd = '';
 
 describe('App e2e', () => {
     let app: INestApplication;
     let prisma: PrismaService;
 
     beforeAll(async () => {
+        passwd = await argon.hash('passwd');
         const moduleRef = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
@@ -37,15 +39,13 @@ describe('App e2e', () => {
         const admin = {
             id: 1,
             email: 'admin@example.com',
-            password: await argon.hash('passwd'),
-            role: Role.ADMIN,
+            password: passwd,
         };
 
         const user = {
             id: 2,
             email: 'user@example.com',
-            password: await argon.hash('passwd'),
-            role: Role.USER,
+            password: passwd,
         };
 
         const book1 = {
@@ -76,11 +76,32 @@ describe('App e2e', () => {
             comment: 'Awfully boring',
         };
 
+        const userRole1 = {
+            id: 1,
+            roleName: Role.USER,
+            userId: 1,
+        };
+
+        const userRole2 = {
+            id: 2,
+            roleName: Role.USER,
+            userId: 2,
+        };
+
+        const userAdmin1 = {
+            id: 3,
+            roleName: Role.ADMIN,
+            userId: 1,
+        };
+
         await prisma.user.createMany({
             data: [admin, user],
         });
         await prisma.book.createMany({ data: [book1, book2] });
         await prisma.review.createMany({ data: [review1, review2] });
+        await prisma.userRole.createMany({
+            data: [userRole1, userRole2, userAdmin1],
+        });
     });
 
     afterAll(() => {

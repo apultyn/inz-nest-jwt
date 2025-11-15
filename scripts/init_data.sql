@@ -1,8 +1,10 @@
+DELETE FROM user_roles;
+
+DELETE FROM reviews;
+
 DELETE FROM books;
 
 DELETE FROM users;
-
-DELETE FROM reviews;
 
 INSERT INTO
     books (author, title)
@@ -38,22 +40,19 @@ VALUES
     ('Miguel de Cervantes', 'Don Quixote');
 
 INSERT INTO
-    users (email, password, role)
+    users (email, password)
 VALUES
     (
         'apultyn@example.com',
-        '$argon2id$v=19$m=65536,t=3,p=4$Z7SxehmAvO8Vwewvn/0TCA$MDxYmO80md0XmjDA0n6XlFB+145JrT9g7s9DvXimPGA',
-        'ADMIN'
+        '$argon2id$v=19$m=65536,t=3,p=4$Z7SxehmAvO8Vwewvn/0TCA$MDxYmO80md0XmjDA0n6XlFB+145JrT9g7s9DvXimPGA'
     ),
     (
         'mpultyn@example.com',
-        '$argon2id$v=19$m=65536,t=3,p=4$Z7SxehmAvO8Vwewvn/0TCA$MDxYmO80md0XmjDA0n6XlFB+145JrT9g7s9DvXimPGA',
-        'USER'
+        '$argon2id$v=19$m=65536,t=3,p=4$Z7SxehmAvO8Vwewvn/0TCA$MDxYmO80md0XmjDA0n6XlFB+145JrT9g7s9DvXimPGA'
     ),
     (
         'bpultyn@example.com',
-        '$argon2id$v=19$m=65536,t=3,p=4$Z7SxehmAvO8Vwewvn/0TCA$MDxYmO80md0XmjDA0n6XlFB+145JrT9g7s9DvXimPGA',
-        'USER'
+        '$argon2id$v=19$m=65536,t=3,p=4$Z7SxehmAvO8Vwewvn/0TCA$MDxYmO80md0XmjDA0n6XlFB+145JrT9g7s9DvXimPGA'
     );
 
 INSERT INTO
@@ -134,3 +133,11 @@ VALUES
         14,
         1
     );
+
+INSERT INTO
+    user_roles (roleName, userId)
+VALUES
+    ("BOOK_USER", 1),
+    ("BOOK_USER", 2),
+    ("BOOK_USER", 3),
+    ("BOOK_ADMIN", 1);

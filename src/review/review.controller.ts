@@ -30,7 +30,7 @@ export class ReviewController {
         return this.reviewService.getById(Number(id));
     }
 
-    @Roles(Role.USER, Role.ADMIN)
+    @Roles(Role.USER)
     @UseGuards(JwtGuard, RolesGuard)
     @Post('')
     create(@Body() dto: ReviewCreateReq, @GetUserId('id') userId: number) {

@@ -14,17 +14,17 @@ datasource db {
 }
 
 enum Role {
-  USER
-  ADMIN
+  USER  @map("BOOK_USER")
+  ADMIN @map("BOOK_ADMIN")
 }
 
 model User {
   id Int @id @default(autoincrement())
 
-  email    String   @unique
+  email    String     @unique
   password String
   reviews  Review[]
-  role     Role     @default(USER)
+  roles    UserRole[]
 
   @@map("users")
 }
@@ -54,4 +54,15 @@ model Review {
 
   @@unique([userId, bookId], name: "uniqueReviewBookUser")
   @@map("reviews")
+}
+
+model UserRole {
+  id Int @id @default(autoincrement())
+
+  roleName Role
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_roles")
 }

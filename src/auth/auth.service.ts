@@ -9,9 +9,10 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as argon from 'argon2';
 
 import { LoginDto, RegisterDto } from '../dto';
-import { Role } from '@prisma/client';
+import { Role, UserRole } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { userSelect } from 'src/constants/user.select';
 
 @Injectable({})
 export class AuthService {
@@ -36,7 +37,13 @@ export class AuthService {
                 select: {
                     id: true,
                     email: true,
-                    role: true,
+                },
+            });
+
+            await this.prisma.userRole.create({
+                data: {
+                    userId: user.id,
+                    roleName: Role.USER,
                 },
             });
 
@@ -58,6 +65,7 @@ export class AuthService {
             where: {
                 email: dto.email,
             },
+            select: userSelect,
         });
 
         if (!user) {
@@ -70,13 +78,13 @@ export class AuthService {
             throw new UnauthorizedException('Password incorrect');
         }
 
-        return this.singToken(user.id, user.email, user.role);
+        return this.singToken(user.id, user.email, user.roles);
     }
 
     async singToken(
         userId: number,
         email: string,
-        role: Role,
+        roles: { roleName: Role }[],
     ): Promise<{ access_token: string; expires_in: number }> {
         const iat = Math.floor(Date.now() / 1000);
         const expires_in_seconds = +this.config.get('JWT_EXPIRE');
@@ -87,7 +95,7 @@ export class AuthService {
             sub: userId,
             iat: iat,
             exp: exp,
-            role: role,
+            roles: roles,
         };
 
         const expires_in = +this.config.get('JWT_EXPIRE');
