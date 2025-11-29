@@ -118,7 +118,7 @@ describe('App e2e', () => {
                 };
                 return pactum
                     .spec()
-                    .post('/api/auth/register')
+                    .post('/api/auth/register/')
                     .withBody(req)
                     .expectStatus(201);
             });
@@ -131,7 +131,7 @@ describe('App e2e', () => {
                 };
                 return pactum
                     .spec()
-                    .post('/api/auth/login')
+                    .post('/api/auth/login/')
                     .withBody(req)
                     .expectStatus(200)
                     .expectBodyContains('access_token')
@@ -149,7 +149,7 @@ describe('App e2e', () => {
                 };
                 return pactum
                     .spec()
-                    .post('/api/auth/login')
+                    .post('/api/auth/login/')
                     .withBody(req)
                     .expectStatus(200)
                     .expectBodyContains('access_token')
@@ -167,14 +167,14 @@ describe('App e2e', () => {
             it('Create unauthorized', () => {
                 return pactum
                     .spec()
-                    .post('/api/books')
+                    .post('/api/books/')
                     .withBody({ title: 'Dune 2', author: 'Frank Herbert' })
                     .expectStatus(401);
             });
             it('Create as user', async () => {
                 return pactum
                     .spec()
-                    .post('/api/books')
+                    .post('/api/books/')
                     .withBearerToken(userToken)
                     .withBody({ title: 'Dune 2', author: 'Frank Herbert' })
                     .expectStatus(403);
@@ -182,7 +182,7 @@ describe('App e2e', () => {
             it('Create as admin', () => {
                 return pactum
                     .spec()
-                    .post('/api/books')
+                    .post('/api/books/')
                     .withBearerToken(adminToken)
                     .withBody({ title: 'Dune 2', author: 'Frank Herbert' })
                     .expectStatus(201);
@@ -192,7 +192,7 @@ describe('App e2e', () => {
             it('Get list', () => {
                 return pactum
                     .spec()
-                    .get('/api/books')
+                    .get('/api/books/')
                     .expectStatus(200)
                     .expectJsonLength(2);
             });
@@ -206,14 +206,14 @@ describe('App e2e', () => {
                 });
                 return pactum
                     .spec()
-                    .get('/api/books?searchString=dune')
+                    .get('/api/books/?searchString=dune')
                     .expectStatus(200)
                     .expectJsonLength(2);
             });
             it('Get single', () => {
                 return pactum
                     .spec()
-                    .get('/api/books/1')
+                    .get('/api/books/1/')
                     .expectStatus(200)
                     .expectBody({
                         id: 1,
@@ -237,14 +237,14 @@ describe('App e2e', () => {
             it('Update unauthorized', () => {
                 return pactum
                     .spec()
-                    .patch('/api/books/1')
+                    .patch('/api/books/1/')
                     .withBody({ title: 'Dune 2' })
                     .expectStatus(401);
             });
             it('Update as user', async () => {
                 return pactum
                     .spec()
-                    .patch('/api/books/1')
+                    .patch('/api/books/1/')
                     .withBody({ title: 'Dune 2' })
                     .withBearerToken(userToken)
                     .expectStatus(403);
@@ -252,7 +252,7 @@ describe('App e2e', () => {
             it('Update as admin', () => {
                 return pactum
                     .spec()
-                    .patch('/api/books/1')
+                    .patch('/api/books/1/')
                     .withBody({ title: 'Dune 2' })
                     .withBearerToken(adminToken)
                     .expectStatus(200)
@@ -265,19 +265,19 @@ describe('App e2e', () => {
         });
         describe('Delete', () => {
             it('Delete unauthorized', () => {
-                return pactum.spec().delete('/api/books/1').expectStatus(401);
+                return pactum.spec().delete('/api/books/1/').expectStatus(401);
             });
             it('Delete as user', async () => {
                 return pactum
                     .spec()
-                    .delete('/api/books/1')
+                    .delete('/api/books/1/')
                     .withBearerToken(userToken)
                     .expectStatus(403);
             });
             it('Delete as admin', () => {
                 return pactum
                     .spec()
-                    .delete('/api/books/1')
+                    .delete('/api/books/1/')
                     .withBearerToken(adminToken)
                     .expectStatus(204);
             });
@@ -293,14 +293,14 @@ describe('App e2e', () => {
             it('Create unauthorized', () => {
                 return pactum
                     .spec()
-                    .post('/api/reviews')
+                    .post('/api/reviews/')
                     .withBody(req)
                     .expectStatus(401);
             });
             it('Create as user', async () => {
                 return pactum
                     .spec()
-                    .post('/api/reviews')
+                    .post('/api/reviews/')
                     .withBearerToken(userToken)
                     .withBody(req)
                     .expectStatus(201);
@@ -308,7 +308,7 @@ describe('App e2e', () => {
             it('Create as admin', () => {
                 return pactum
                     .spec()
-                    .post('/api/reviews')
+                    .post('/api/reviews/')
                     .withBearerToken(adminToken)
                     .withBody({ ...req, bookId: 1 })
                     .expectStatus(201);
@@ -318,14 +318,14 @@ describe('App e2e', () => {
             it('Get list', () => {
                 return pactum
                     .spec()
-                    .get('/api/reviews')
+                    .get('/api/reviews/')
                     .expectStatus(200)
                     .expectJsonLength(2);
             });
             it('Get single', () => {
                 return pactum
                     .spec()
-                    .get('/api/reviews/1')
+                    .get('/api/reviews/1/')
                     .expectStatus(200)
                     .expectBody({
                         id: 1,
@@ -342,14 +342,14 @@ describe('App e2e', () => {
             it('Update unauthorized', () => {
                 return pactum
                     .spec()
-                    .patch('/api/reviews/1')
+                    .patch('/api/reviews/1/')
                     .withBody({ stars: 3 })
                     .expectStatus(401);
             });
             it('Update as user', async () => {
                 return pactum
                     .spec()
-                    .patch('/api/reviews/1')
+                    .patch('/api/reviews/1/')
                     .withBody({ stars: 3 })
                     .withBearerToken(userToken)
                     .expectStatus(403);
@@ -357,7 +357,7 @@ describe('App e2e', () => {
             it('Update as admin', () => {
                 return pactum
                     .spec()
-                    .patch('/api/reviews/1')
+                    .patch('/api/reviews/1/')
                     .withBody({ stars: 3 })
                     .withBearerToken(adminToken)
                     .expectStatus(200)
@@ -377,20 +377,20 @@ describe('App e2e', () => {
                 it('Delete unauthorized', () => {
                     return pactum
                         .spec()
-                        .delete('/api/reviews/1')
+                        .delete('/api/reviews/1/')
                         .expectStatus(401);
                 });
                 it('Delete as user', async () => {
                     return pactum
                         .spec()
-                        .delete('/api/reviews/1')
+                        .delete('/api/reviews/1/')
                         .withBearerToken(userToken)
                         .expectStatus(403);
                 });
                 it('Delete as admin', () => {
                     return pactum
                         .spec()
-                        .delete('/api/reviews/1')
+                        .delete('/api/reviews/1/')
                         .withBearerToken(adminToken)
                         .expectStatus(204);
                 });

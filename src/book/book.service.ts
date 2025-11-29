@@ -70,14 +70,12 @@ export class BookService {
     }
 
     async update(id: number, dto: BookUpdateReq) {
-        const book = this.getById(id);
-
         try {
             const updatedBook = await this.prismaService.book.update({
                 where: {
                     id: id,
                 },
-                data: { ...book, ...dto },
+                data: { ...dto },
             });
             return updatedBook;
         } catch (error) {
@@ -86,6 +84,9 @@ export class BookService {
                     throw new BadRequestException(
                         'Books must have unique combination of title and author',
                     );
+                }
+                if (error.code === 'P2025') {
+                    throw new NotFoundException('Book not found');
                 }
             }
             throw error;

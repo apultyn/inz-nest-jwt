@@ -21,34 +21,37 @@ import { GetUserId } from 'src/auth/decorator/user.decorator';
 export class ReviewController {
     constructor(private reviewService: ReviewService) {}
     @Get('')
-    getAll() {
-        return this.reviewService.getAll();
+    async getAll() {
+        return await this.reviewService.getAll();
     }
 
     @Get(':id')
-    getById(@Param('id') id: string) {
-        return this.reviewService.getById(Number(id));
+    async getById(@Param('id') id: string) {
+        return await this.reviewService.getById(Number(id));
     }
 
     @Roles(Role.USER)
     @UseGuards(JwtGuard, RolesGuard)
     @Post('')
-    create(@Body() dto: ReviewCreateReq, @GetUserId('id') userId: number) {
-        return this.reviewService.create(dto, userId);
+    async create(
+        @Body() dto: ReviewCreateReq,
+        @GetUserId('id') userId: number,
+    ) {
+        return await this.reviewService.create(dto, userId);
     }
 
     @Roles(Role.ADMIN)
     @UseGuards(JwtGuard, RolesGuard)
     @Patch(':id')
-    update(@Body() dto: ReviewUpdateReq, @Param('id') id: string) {
-        return this.reviewService.update(dto, Number(id));
+    async update(@Body() dto: ReviewUpdateReq, @Param('id') id: string) {
+        return await this.reviewService.update(dto, Number(id));
     }
 
     @Roles(Role.ADMIN)
     @UseGuards(JwtGuard, RolesGuard)
     @Delete(':id')
     @HttpCode(204)
-    delete(@Param('id') id: string) {
-        return this.reviewService.delete(Number(id));
+    async delete(@Param('id') id: string) {
+        return await this.reviewService.delete(Number(id));
     }
 }

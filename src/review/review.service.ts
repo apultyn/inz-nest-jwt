@@ -52,7 +52,7 @@ export class ReviewService {
                     );
                 }
                 if (error.code === 'P2003') {
-                    throw new BadRequestException('Book does not exist');
+                    throw new NotFoundException('Book does not exist');
                 }
             }
             throw error;
@@ -60,18 +60,21 @@ export class ReviewService {
     }
 
     async update(dto: ReviewUpdateReq, id: number) {
-        const review = this.getById(id);
-
         try {
             const updatedReview = await this.prismaService.review.update({
                 where: {
                     id: id,
                 },
-                data: { ...review, ...dto },
+                data: { ...dto },
                 select: reviewSelect,
             });
             return updatedReview;
         } catch (error) {
+            if (error instanceof PrismaClientKnownRequestError) {
+                if (error.code === 'P2025') {
+                    throw new NotFoundException('Review not found');
+                }
+            }
             throw error;
         }
     }
